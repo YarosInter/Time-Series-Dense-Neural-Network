@@ -76,8 +76,8 @@ def add_shifted_columns(df, num_columns, name="close"):
 
 
 
-def split_data(features, labels, percent=80):
-   def split_data(features, labels, percent=80, validation_sets=False):
+
+def split_data(features, labels, percent=80, validation_sets=False):
     """
     Splits features and labels into training, validation, and testing sets based on the specified percentage.
     
