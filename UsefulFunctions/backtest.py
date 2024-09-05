@@ -96,7 +96,7 @@ def plot_test_returns_cufflinks(returns, name=" "):
 
 
 
-def plot_test_returns(returns, legend=True):
+def plot_test_returns(returns, legend=True, name=" "):
     """
     Plots the cumulative percentage returns from a trading strategy.
 
@@ -119,7 +119,7 @@ def plot_test_returns(returns, legend=True):
     # Set labels and title
     plt.xlabel('Time', fontsize=20)
     plt.ylabel('P&L in %', fontsize=20)
-    plt.title('Cumulative Returns', fontsize=20)
+    plt.title(f'Cumulative Returns {name}', fontsize=20)
     plt.legend().set_visible(legend)
     print(f"Profits : {'%.2f' % (returns.cumsum().iloc[-1].sum() * 100)}%")
 
@@ -331,7 +331,7 @@ def compute_model_accuracy(real_positions, predicted_positions):
 
 
 
-def strategy_drawdown_cufflinks(return_series):
+def plot_drawdown_cufflinks(return_series):
     """
     Computes and visualizes the drawdown of a strategy based on its return series.
 
@@ -382,7 +382,7 @@ def strategy_drawdown_cufflinks(return_series):
 
 
 
-def strategy_drawdown(return_series):
+def plot_drawdown(return_series, name=" "):
     """
     Computes and visualizes the drawdown of a strategy based on its return series.
 
@@ -415,12 +415,26 @@ def strategy_drawdown(return_series):
 
     plt.figure(figsize=(15, 4))
     plt.fill_between(drawdown.index, drawdown * 100, 0, drawdown, color="red", alpha=0.70)
-    plt.title("Strategy Drawdown", fontsize=20)
+    plt.title(f"Strategy Drawdown {name}", fontsize=20)
     plt.ylabel("Drawdown %", fontsize=15)
+    plt.xlabel("Time")
     plt.show()
 
     maximum_drawdown = np.min(drawdown) * 100
     print(f"Max Drawdown: {'%.2f' % maximum_drawdown}%")
+
+
+
+def compute_drawdown(returns):
+    # Compute cumulative return
+    cumulative_return = returns.dropna().cumsum() + 1
+
+    # Calculate running maximum
+    running_max = np.maximum.accumulate(cumulative_return)
+
+    # Computing the drawdown
+    drawdown = cumulative_return / running_max - 1
+    return drawdown
 
 
 
