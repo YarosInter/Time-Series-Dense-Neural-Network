@@ -421,3 +421,84 @@ def strategy_drawdown(return_series):
 
     maximum_drawdown = np.min(drawdown) * 100
     print(f"Max Drawdown: {'%.2f' % maximum_drawdown}%")
+
+
+
+def create_model_checkpoint(model_name, save_path="model_experiments"):
+    """
+    Creates a ModelCheckpoint callback to save the best-performing version of a model during training.
+    
+    Args:
+        model_name (str): The name of the model to be used for saving the file.
+        save_path (str, optional): The directory path where the model file will be saved. Defaults to "model_experiments".
+    
+    Returns:
+        ModelCheckpoint: A callback that saves the model with the lowest validation loss.
+    
+    Notes:
+        - The checkpoint saves the model in the provided directory (`save_path`) with the format "{model_name}.keras".
+        - Only the model with the best validation loss is saved.
+    """
+    # Ensure the directory exists
+    #os.makedirs(save_path, exist_ok=True)
+    
+    return ModelCheckpoint(
+        filepath=os.path.join(save_path, f"{model_name}.keras"),
+        monitor="val_loss",
+        verbose=0,
+        save_best_only=True
+    )
+
+
+def run_dnn(p_model_name, layers=3, p_epochs=50, lr=0.001, ptn=5):
+    """
+    Builds, compiles, and trains a deep neural network (DNN) model with specified parameters.
+
+    Args:
+        p_model_name (str): Name of the model to be used for saving and tracking.
+        layers (int, optional): Number of hidden layers to include in the model. Defaults to 3.
+        p_epochs (int, optional): Number of epochs for training the model. Defaults to 50.
+        lr (float, optional): Learning rate for the Adam optimizer. Defaults to 0.001.
+        ptn (int, optional): Patience parameter for EarlyStopping, which controls how many epochs to wait for improvement before stopping. Defaults to 5.
+
+    Returns:
+        History: Training history of the model, including loss and metric values.
+
+    Notes:
+        - The model includes Dropout layers for regularization and uses ReLU activations in hidden layers.
+        - EarlyStopping is used to stop training if the validation loss does not improve after a specified number of epochs (`ptn`).
+        - ModelCheckpoint saves the model with the best validation loss during training.
+        - The model is compiled using Mean Absolute Error (MAE) as the loss function and Adam optimizer with a specified learning rate (`lr`).
+        - Validation data is used during training to monitor performance on unseen data.
+    """
+    
+    hidden_layers = layers 
+    p_model_name = Sequential(name=p_model_name)
+
+    # Input layer
+    p_model_name.add(Dense(64, input_shape=(X_train_scaled.shape[1],), name="input_layer"))
+
+    # hidden layers
+    for i in range(0, hidden_layers):
+        p_model_name.add(Dense(64, activation="relu", name=f"hidden_layer_{i}"))
+        p_model_name.add(Dropout(0.25, name=f"dropout_layer_{i}"))
+
+    # Output layer
+    p_model_name.add(Dense(1, activation="linear", name="output_layer"))
+    
+    checkpoint_callback = create_model_checkpoint(p_model_name.name)
+    early_stopping = EarlyStopping(monitor="val_loss", patience=ptn, verbose=1)
+
+    # Compiling the model
+    p_model_name.compile(loss="mae", optimizer=Adam(learning_rate=lr), metrics=["mae","mse"])
+
+    # Training the model
+    history = p_model_name.fit(X_train_scaled, np.sign(y_train), 
+                                   validation_data=(X_val_scaled, np.sign(y_val)), 
+                                   batch_size=128, 
+                                   epochs=p_epochs,
+                                   verbose=0,
+                                   callbacks=[checkpoint_callback, early_stopping]
+                                  )
+
+    return history
