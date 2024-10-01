@@ -60,8 +60,10 @@ To run this project, you need Python installed along with the following packages
 
 ## Getting Started
 
-1. **Clone the Repository**: Clone this repository to your local machine using `git clone https://github.com/YarosInter/Time-Series-Dense-Neural-Network.git`.
-
+1. **Clone the Repository for Viewing**: You may clone this repository to your local machine for personal review and educational purposes only:
+   ```bash 
+   git clone https://github.com/YarosInter/Time-Series-Dense-Neural-Network.git
+   ```
 2. **Install Dependencies**: Ensure all required Python packages are installed.
 
 3. **Run the Notebook**: Open `Dense Layer Neural Network.ipynb` in Jupyter Notebook to explore the model and results.
@@ -70,10 +72,14 @@ To run this project, you need Python installed along with the following packages
 
 5. **Backtesting**: Use `backtest.py` to evaluate your strategy's performance using cumulative returns and drawdown analysis.
 
+   
+   
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or new features.
+This repository is for personal or educational purposes only. Contributions and modifications are not permitted unless explicitly allowed. Feel free to reach out if you'd like to collaborate or contribute, let’s learn together!
 
-## License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+## Disclaimer
+
+The code in this repository is for educational or personal review only and is not licensed for use, modification, or distribution. 
+This code is part of my journey in learning and experimenting with new ideas. It’s shared for educational purposes and personal review. Please feel free to explore, but kindly reach out for permission if you’d like to use, modify, or distribute any part of it.
